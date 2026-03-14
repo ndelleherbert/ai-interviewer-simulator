@@ -1,23 +1,24 @@
-
 import streamlit as st
 import json
 import os
-from openai import OpenAI
+from anthropic import Anthropic
 from dotenv import load_dotenv
 
-# Load environment variables
 load_dotenv()
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# ✅ Fix 1: Anthropic() not anthropic.Anthropic()
+# ✅ Fix 2: use ANTHROPIC_API_KEY to match .env standard
+client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
 st.title("🤖 AI Interviewer Simulator")
+with st.sidebar:
 
 # ---------------------------
 # User Inputs
 # ---------------------------
 
-role = st.selectbox(
-    "Select Role",
+    role = st.selectbox(
+        "Select Role",
     [
         "Frontend Developer",
         "Backend Developer",
@@ -27,8 +28,8 @@ role = st.selectbox(
     ]
 )
 
-topic = st.selectbox(
-    "Select Topic / Stack",
+    topic = st.selectbox(
+        "Select Topic / Stack",
     [
         "JavaScript",
         "React",
@@ -40,8 +41,8 @@ topic = st.selectbox(
     ]
 )
 
-experience = st.selectbox(
-    "Experience Level",
+    experience = st.selectbox(
+        "Experience Level",
     [
         "Fresher",
         "1–3 years",
@@ -50,8 +51,8 @@ experience = st.selectbox(
     ]
 )
 
-round_type = st.selectbox(
-    "Interview Round",
+    round_type = st.selectbox(
+        "Interview Round",
     [
         "Technical Round 1",
         "Technical Round 2",
@@ -59,12 +60,12 @@ round_type = st.selectbox(
     ]
 )
 
-num_questions = st.selectbox(
-    "Number of Questions",
+    num_questions = st.selectbox(
+        "Number of Questions",
     [5, 10, 15, 20]
 )
 
-generate = st.button("Generate Questions")
+    generate = st.button("Generate Questions")
 
 # ---------------------------
 # Prompt Generator
@@ -100,12 +101,13 @@ Rules:
 
 def generate_questions(prompt):
 
-    response = client.responses.create(
-        model="gpt-4.1-mini",
-        input=prompt
+    response = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=1000,              # ✅ Fix 3: max_tokens is required
+        messages=[{"role": "user", "content": prompt}]
     )
 
-    return response.output_text
+    return response.content[0].text
 
 
 # ---------------------------

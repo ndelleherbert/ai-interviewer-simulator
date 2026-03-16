@@ -31,15 +31,15 @@ ai-interviewer-simulator/
 ```python
 import streamlit as st
 import json
-from openai import OpenAI
+from anthropic import Anthropic
 from dotenv import load_dotenv
 import os
 from utils.prompt_utils import create_prompt, generate_questions
 
 # Load environment variables
 load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY")
-client = OpenAI(api_key=api_key)
+api_key = os.getenv("ANTHROPIC_API_KEY")
+client = Anthropic(api_key=api_key)
 
 st.title("AI Interviewer Simulator")
 
@@ -128,9 +128,11 @@ Rules:
 """
 
 def generate_questions(prompt, client):
-    response = client.responses.create(
-        model="gpt-4.1-mini",
-        input=prompt
+    message = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_token = 1500,
+        meassages=[{"role": "system", "content": "You are a helpful assistant that generates interview questions."},
+         {"role": "user", "content": prompt}]
     )
     return response.output_text
 ```
@@ -141,7 +143,7 @@ def generate_questions(prompt, client):
 
 ```
 streamlit==1.33.1
-openai==1.31.0
+claude-sdk==0.1.0
 python-dotenv==1.0.1
 ```
 
@@ -151,7 +153,7 @@ python-dotenv==1.0.1
 
 ```env
 # Copy this file to .env and replace YOUR_KEY with your OpenAI API key
-OPENAI_API_KEY=YOUR_OPENAI_API_KEY_HERE
+ANTHROPIC_API_KEY=YOUR_ANTHROPIC_API_KEY_HERE
 ```
 
 ---
@@ -242,7 +244,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-4. Copy `.env.example` → `.env` and add your OpenAI API key.
+4. Copy `.env.example` → `.env` and add your ANTHROPIC API KEY.
 
 5. Run the app:
 

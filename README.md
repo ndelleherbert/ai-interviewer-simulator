@@ -1,9 +1,3 @@
-Perfect! I can lay out a **ready-to-push GitHub repo skeleton** for your AI Interviewer Simulator with **all necessary files, folders, and placeholders**, so you can literally copy it and push to GitHub immediately.
-
-Here’s the full skeleton:
-
----
-
 ## Repository: `ai-interviewer-simulator`
 
 ```
